@@ -1,0 +1,13 @@
+.crp_item_wrapper {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+    margin-block: 5px;
+}
+.crp_item_wrapper li {
+	list-style: none;
+}
+.crp_post_title a {
+	text-decoration: none;
+	text-transform: capitalize;
+}
