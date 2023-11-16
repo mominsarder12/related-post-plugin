@@ -14,6 +14,16 @@
 * Text Domain:       textdomain-crp
 * Domain Path:       /languages
 */
+add_action('admin_enqueue_scripts', 'rp_admin_scripts');
+
+function rp_admin_scripts($hook)
+{
+    if ($hook == 'toplevel_page_related_post_settings' || $hook = "related-post-settings_page_layout-settings") {
+        // Enqueue your JavaScript file
+        wp_enqueue_script('rp-admin-script', plugin_dir_url(__FILE__) . 'inc/js/plugin-admin.js', array(), '1.0.0', true);
+        wp_enqueue_style('rp-admin-style', plugin_dir_url(__FILE__) . 'inc/css/plugin-admin.css', array(), '1.0.0', 'all');
+    }
+}
 
 
 
@@ -31,18 +41,11 @@ function crp_enqueue_scripts()
 
 {
     $dir = plugin_dir_url(__FILE__);
-    wp_enqueue_style('crp_main_style', $dir . '/style.css', array(), '1.0.0', 'all');
+    wp_enqueue_style('crp_main_style', $dir . 'style.css', array(), '1.0.0', 'all');
 }
 
 
-add_action('admin_enqueue_scripts', 'rp_admin_scripts');
 
-function rp_admin_scripts()
-{
-    // Enqueue your JavaScript file
-    wp_enqueue_script('rp-admin-script', plugin_dir_url(__FILE__) . 'inc/js/plugin-admin.js', array(), '1.0.0', true);
-    wp_enqueue_script('rp-admin-style', plugin_dir_url(__FILE__) . 'inc/css/plugin-admin.css', array(), '1.0.0', true);
-}
 
 add_filter('the_content', 'show_custom_related_post');
 
@@ -61,7 +64,7 @@ function show_custom_related_post($default)
     }
 
     //nassercery variables
-    $rp_section_title = get_option('rp_section_title','Related Post');
+    $rp_section_title = get_option('rp_section_title', 'Related Post');
 
     $rp_post_type = get_option('rp_post_type');
     if ('auto' == $rp_post_type) {
@@ -77,6 +80,14 @@ function show_custom_related_post($default)
     }
     $rp_post_order = esc_attr(get_option('rp_post_order'));
     $rp_post_order_by = esc_attr(get_option('rp_post_order_by'));
+    $rp_show_thumbnail = esc_attr(get_option('rp_show_thumbnail'));
+
+    $rp_thumbnail_width = get_option('rp_thumbnail_width');
+    //$rp_thumbnail_width = 350;
+    $rp_thumbnail_height = get_option('rp_thumbnail_height');
+    //$rp_thumbnail_height = 100;
+    $rp_thumbnail =  get_the_post_thumbnail(get_the_ID(), array($rp_thumbnail_width,  $rp_thumbnail_height), array('class' => 'crp_thumbnail'));
+    $rp_display_columns = get_option('rp_display_columns');
 
 
 
@@ -100,19 +111,26 @@ function show_custom_related_post($default)
 
         while ($related_post_query->have_posts()) :
             $related_post_query->the_post();
-            $default .= '<div class="crp_item_wrapper">';
-            $default .= '<div>' . get_the_post_thumbnail(get_the_ID(), array(100, 180), array('class' => 'crp_thumbnail')) . '</div>';
+            $default .= '<div class="crp_single_area rp-col rp-col-'.$rp_display_columns.'"><div class="crp_item_wrapper">';
+            if ($rp_show_thumbnail == 1) {
+                $default .= '<div>' . $rp_thumbnail . '</div>';
+            }
             $default .= '<div class="crp_post_title"><a href="' . esc_url(get_the_permalink()) . '">' . esc_html(get_the_title(), 'textdomain-crp') . '</a></div>';
-            $default .= '</div>';
+            $default .= '</div></div>';
 
         endwhile;
 
         $default .= '</div>';
+        $default .= "Section title = $rp_section_title" . "<br>";
         $default .= "post types = $rp_post_type" . "<br>";
         $default .= "ignore sticky posts =" . $ignore_sticky_post . "<br>";
         $default .= "number of post to display =" . $rp_number_of_post . "<br>";
         $default .= "order of post =" . $rp_post_order . "<br>";
         $default .= "Order by =" . $rp_post_order_by . "<br>";
+        $default .= "Show Thumbnail =" . $rp_show_thumbnail . "<br>";
+        $default .= "thumbnail Width =" . $rp_thumbnail_width . "<br>";
+        $default .= "thumbnail height =" . $rp_thumbnail_height . "<br>";
+        $default .= "column to display =" . $rp_display_columns . "<br>";
 
         return $default;
     }

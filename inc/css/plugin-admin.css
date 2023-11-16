@@ -1,3 +1,27 @@
-.input-main{
-	border: 2px solid blue;
+.block-div {
+	margin-bottom: 20px;
 }
+.block-div input[type="number"] {
+	margin-left: 60px;
+	width: 80px;
+}
+.label-block {
+	font-weight: 600;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+.rp_admin_description {
+  text-transform: capitalize;
+	display: inline-block;
+	margin-left: 20px;
+}
+
