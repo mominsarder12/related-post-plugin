@@ -244,4 +244,3 @@ function rp_display_columns_callback()
 
     echo '</select>';
 }
-
